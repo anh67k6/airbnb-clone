@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const connectWithDB = require('./config/db');
+const CookieParser = require("cookie-parser");
+
 require('dotenv').config();
 // const cloudinary = require('cloudinary').v2;
 
@@ -17,11 +19,12 @@ connectWithDB();
 const app = express();
 
 // middleware to handle json
+app.use(CookieParser());
 app.use(express.json());
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: '*',
     credentials: true,
   }),
 );

@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-// const userFromToken = require('../utils/userFromToken');
+const userFromToken = require('../utils/userFromToken');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
@@ -90,8 +90,26 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.profile = async (req, res) => {
+  try {
+    const userData = userFromToken(req);
+    if (userData) {
+      const { name, email, description, profilePicture, _id } =
+        await User.findById(userData.id);
+      res.status(200).json({ name, email, description, profilePicture, _id });
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: 'Internal server Error',
+      error: err,
+    });
+  }
+};
+
 exports.logout = async (req, res) => {
   res.cookie('token', '').json({
-    message: 'logged out successfully!',
+    message: 'Logged out successfully!',
   });
 };
